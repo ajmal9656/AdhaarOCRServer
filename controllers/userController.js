@@ -18,7 +18,7 @@ export class UserController {
     const frontOCR = await this.performOCR(frontImage.buffer);
     const backOCR = await this.performOCR(backImage.buffer);
 
-    // Extract relevant data from OCR text
+   
     const extractedData = extractAadharDetails(frontOCR, backOCR);
 
     const age =  this.calculateAge(extractedData.dob);
@@ -29,12 +29,12 @@ export class UserController {
     
 
 
-    // Send the extracted details in the response
+    
     res.status(200).json(extractedData);
       } catch (error) {
         console.error("Error while parsing data:", error);
   
-        // Handle errors and respond with an error message
+       
         return res.status(500).json({ message: "An error occurred while parsing data", error: error.message });
       }
     }
@@ -45,9 +45,9 @@ export class UserController {
         const {
           data: { text },
         } = await Tesseract.recognize(imageBuffer, "eng", {
-          logger: (m) => console.log(m), // Logs OCR process progress
-          tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", // Restrict OCR to alphanumeric characters (helpful for Aadhaar cards)
-          preprocess: true, // Preprocess the image to enhance OCR accuracy (this might require fine-tuning)
+          logger: (m) => console.log(m), 
+          tessedit_char_whitelist: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 
+          preprocess: true, 
         });
     
         // Clean and return the OCR text
@@ -66,30 +66,30 @@ export class UserController {
       const extractedInfo = {
         aadharNumber: this.extractAadharNumber(cleanedText),
         name: this.extractName(cleanedText),
-        rawText: cleanedText, // Keep the raw text for debugging or further analysis
+        rawText: cleanedText, 
       };
     
       return extractedInfo;
     }
     
     extractAadharNumber(text) {
-      // Aadhaar number is a 12-digit number (grouped 4-4-4)
+    
       const aadharRegex = /\b\d{4}\s?\d{4}\s?\d{4}\b/;
       const match = text.match(aadharRegex);
-      return match ? match[0].replace(/\s/g, "") : null; // Remove spaces if matched
+      return match ? match[0].replace(/\s/g, "") : null; 
     }
     
     extractName(text) {
-      // Aadhaar name extraction using regex (improve this as needed)
+      
       const nameRegex = /[A-Z][a-z]+ [A-Z][a-z]+/;
       const match = text.match(nameRegex);
-      return match ? match[0] : null; // Return the matched name
+      return match ? match[0] : null; 
     }
 
     calculateAge(dob) {
-      // Convert the dob string into a Date object
+      
       const [day, month, year] = dob.split('/').map(Number);
-      const birthDate = new Date(year, month - 1, day); // month is 0-indexed in JavaScript
+      const birthDate = new Date(year, month - 1, day); 
     
       // Get the current date
       const currentDate = new Date();
