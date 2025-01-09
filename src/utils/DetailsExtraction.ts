@@ -10,11 +10,22 @@ function extractAadharDetails(front:any, back:any) {
     return details;
   }
   
-  function extractName(rawText:any, name:any) {
+  function extractName(rawText: any, name: any) {
+    // If name is already provided, return it
     if (name) return name; 
+  
+    // Ensure rawText is a valid string before using match
+    if (typeof rawText !== 'string' || !rawText) {
+      throw new Error("Invalid rawText: Expected a non-empty string");
+    }
+  
+    // Try to match the name in rawText using regex
     const nameMatch = rawText.match(/Name:\s?([A-Za-z\s]+)/);
+  
+    // Return the matched name or null if no match
     return nameMatch ? nameMatch[1].trim() : null;
   }
+  
   function extractDOB(rawText:any) {
     
     const dobMatch = rawText.match(/DOB[:\s~]*(\d{2}\/\d{2}\/\d{4})/);
