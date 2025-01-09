@@ -18,6 +18,7 @@ export class UserController {
     const frontOCR = await this.performOCR(frontImage.buffer);
     const backOCR = await this.performOCR(backImage.buffer);
 
+
    
     const extractedData:any = extractAadharDetails(frontOCR, backOCR);
 
@@ -64,12 +65,17 @@ export class UserController {
       const {
         data: { text },
       } = await Tesseract.recognize(imageBuffer, "eng", {
-        logger: (m) => console.log(m), // Logs OCR progress
+        // logger: (m) => console.log(m), // Logs OCR progress
       });
   
+      console.log("Original OCR Text:", text);  // Log the raw text output
+  
       // Use a regular expression to filter the text
-      const whitelistRegex = /[A-Z0-9]/g;
-      const cleanedText = text.match(whitelistRegex)?.join("") || "";
+      const whitelistRegex = /[A-Z0-9\s]/g;  // Include spaces in the regex if needed
+      const cleanedText = this.cleanOCRText(text);
+      
+  
+      console.log("Cleaned Text:", cleanedText);  // Log the cleaned text
   
       return cleanedText;
     } catch (error) {
@@ -79,9 +85,13 @@ export class UserController {
   }
   
 
+  
+
     cleanOCRText(text:any) {
       // Remove excessive whitespaces, and trim the text
       let cleanedText = text.replace(/\s+/g, " ").trim();
+      console.log("cleanOCRText",cleanedText);
+      
     
       const extractedInfo = {
         aadharNumber: this.extractAadharNumber(cleanedText),

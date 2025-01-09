@@ -1,4 +1,6 @@
 function extractAadharDetails(front, back) {
+    console.log("front", front);
+    console.log("back", back);
     const details = {
         aadharNumber: front.aadharNumber || back.aadharNumber || null,
         name: extractName(front.rawText, front.name),
@@ -10,6 +12,7 @@ function extractAadharDetails(front, back) {
     return details;
 }
 function extractName(rawText, name) {
+    console.log("rawText before matching:", rawText);
     if (name)
         return name;
     const nameMatch = rawText.match(/Name:\s?([A-Za-z\s]+)/);
